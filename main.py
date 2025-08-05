@@ -56,19 +56,26 @@ class NameSearcher(ctk.CTk):
 		search_url = self.tilde_url.replace("REPLACEME", word_to_search)
 		
 		# request answer from llevatilde.es
-		request_response = get(search_url).content # get content to pass it into beautifulsoup
-		soup = BeautifulSoup(request_response, "html.parser") # use the html parser
+		try:
+			request_response = get(search_url).content # get content to pass it into beautifulsoup
+			soup = BeautifulSoup(request_response, "html.parser") # use the html parser
 
-		# search for links in the html and get the one we want (one word following /palabra/ that is not separated by -)
-		for link in soup.find_all("a"):
-			link_string = link.get("href")
-			if link_string.split("/")[-2] == "palabra" and "-" not in link_string.split("/")[-1]:
-				true_response = BeautifulSoup(get(f"{str(self.tilde_url_wrong)}{str(link_string)}").content, "html.parser")
-				output_label_text = true_response.title
-				# <title>¿Lleva tilde ventura? | LlevaTilde.es</title>
-				output_label_text_formatted = self.format_output_text(output_label_text)
-				print(output_label_text_formatted)
-				self.output_label_text.set(output_label_text_formatted)
+			# search for links in the html and get the one we want (one word following /palabra/ that is not separated by -)
+			for link in soup.find_all("a"):
+				link_string = link.get("href")
+				if link_string.split("/")[-2] == "palabra" and "-" not in link_string.split("/")[-1]:
+					print(link_string)
+					true_response = BeautifulSoup(get(f"{str(self.tilde_url_wrong)}{str(link_string)}").content, "html.parser")
+					output_label_text = true_response.title
+					# <title>¿Lleva tilde ventura? | LlevaTilde.es</title>
+					output_label_text_formatted = self.format_output_text(output_label_text)
+					print(output_label_text_formatted)
+					self.output_label.configure(text_color= WHITE)
+					self.output_label_text.set(output_label_text_formatted)
+		except:
+			error_message = "La palabra introducida no fué encontrada en llevatilde.es"
+			self.output_label.configure(text_color= RED)
+			self.output_label_text.set(error_message)
 	
 	def format_output_text(self, text_to_edit):
 		# formats text so it can fit better into the output label and frame
