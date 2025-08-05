@@ -18,7 +18,7 @@ class NameSearcher(ctk.CTk):
 		self.tilde_url_wrong = "https://www.llevatilde.es"
 		self.font = FONT 
 		self.name_to_search = ctk.StringVar()
-		self.output_label_text = ctk.StringVar(value= "woopwoop")
+		self.output_label_text = ctk.StringVar()
 
 		# create widgets
 		self.create_widgets()
